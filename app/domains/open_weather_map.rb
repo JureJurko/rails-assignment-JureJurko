@@ -4,15 +4,15 @@ module OpenWeatherMap
     id = Resolver.city_id(name)
     return nil unless id
 
-    hash = HTTP.get("https://api.openweathermap.org/data/2.5/weather?id=#{id}&appid=#{APPID}")
-    City.parse(hash)
+    rsp = HTTP.get("https://api.openweathermap.org/data/2.5/weather?id=#{id}&appid=#{APPID}")
+    City.parse(rsp.parse)
   end
 
   def self.cities(names)
     ids = names.map { |name| Resolver.city_id(name) }.compact
     return nil if ids.blank?
 
-    hash = HTTP.get("https://api.openweathermap.org/data/2.5/group?id=#{ids.join(',')}&appid=#{APPID}")
-    hash['list'].map { |hsh| City.parse(hsh) }
+    rsp = HTTP.get("https://api.openweathermap.org/data/2.5/group?id=#{ids.join(',')}&appid=#{APPID}")
+    rsp.parse['list'].map { |hsh| City.parse(hsh) }
   end
 end

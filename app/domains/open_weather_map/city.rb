@@ -32,7 +32,7 @@ module OpenWeatherMap
 
     def nearby(count = 5)
       hash = HTTP.get("https://api.openweathermap.org/data/2.5/find?lat=#{@lat}&lon=#{@lon}&cnt=#{count}&appid=#{APPID}")
-      hash['list'].map { |e| parse(e) }
+      hash['list'].map { |e| OpenWeatherMap::City.parse(e) }
     end
 
     def coldest_nearby(list)
