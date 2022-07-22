@@ -7,7 +7,7 @@ module OpenWeatherMap
   end
 
   def self.cities(names)
-    ids = names.map { |name| Resolver.city_id(name) }
+    ids = names.map { |name| Resolver.city_id(name) }.compact
     hash = HTTP.get("https://api.openweathermap.org/data/2.5/group?id=#{ids.join(',')}&appid=#{APPID}")
     hash['list'].map { |hsh| City.parse(hsh) }
   end

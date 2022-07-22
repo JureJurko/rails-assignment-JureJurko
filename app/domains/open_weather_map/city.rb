@@ -20,13 +20,14 @@ module OpenWeatherMap
       name <=> other.name
     end
 
-    def parse(hash)
-      lat = hash['coord']['lat']
-      lon = hash['coord']['lon']
-      temp_k = hash['main']['temp']
-      name = hash['name']
-      id = hash['id']
-      City.new(id: id, lat: lat, lon: lon, temp_k: temp_k, name: name)
+    def self.parse(hash)
+      City.new(
+        id: hash['id'],
+        lat: hash['coord']['lat'],
+        lon: hash['coord']['lon'],
+        temp_k: hash['main']['temp'],
+        name: hash['name']
+      )
     end
 
     def nearby(count = 5)
