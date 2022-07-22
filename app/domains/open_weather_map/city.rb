@@ -1,6 +1,6 @@
 module OpenWeatherMap
   class City
-    def initilaize(id:, lat:, lon:, temp_k:, name:)
+    def initialize(id:, lat:, lon:, temp_k:, name:)
       @id = id
       @lat = lat
       @lon = lon
@@ -15,9 +15,9 @@ module OpenWeatherMap
     end
 
     def <=>(other)
-      return other.temp <=> temp unless other.temp == temp
+      return temp <=> other.temp unless other.temp == temp
 
-      other.name <=> name
+      name <=> other.name
     end
 
     def parse(hash)
