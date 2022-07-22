@@ -1,4 +1,10 @@
 RSpec.describe OpenWeatherMap::City do
+  let(:hash) do
+    { 'coord' =>
+      { 'lat' => 145.77, 'lon' => -16.92 },
+      'main' => { 'temp' => 300.15 }, 'id' => 1, 'name' => 'Zagreb' }
+  end
+
   it 'initializes values correctly' do
     var = described_class.new(id: 42, lat: 33, lon: 24, temp_k: 303.111, name: 'Zagreb')
     expect(var.id).to eq(42)
@@ -44,9 +50,6 @@ RSpec.describe OpenWeatherMap::City do
   end
 
   it 'correctly parses hash given from site' do
-    hash = { 'coord' =>
-      { 'lat' => 145.77, 'lon' => -16.92 },
-             'main' => { 'temp' => 300.15 }, 'id' => 1, 'name' => 'Zagreb' }
     var = described_class.parse(hash)
     expect(var.id).to eq(1)
     expect(var.lat).to eq(145.77)
