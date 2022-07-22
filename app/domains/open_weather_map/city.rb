@@ -31,7 +31,7 @@ module OpenWeatherMap
     end
 
     def nearby(count = 5)
-      rsp = HTTP.get("#{BASE_URL}/find", { lat: @lat, lon: @lon, cnt: count, appid: APPID })
+      rsp = HTTP.get("#{BASE_URL}/find?lat=#{@lat}&lon=#{@lon}&cnt=#{count}&appid=#{APPID}")
       rsp.parse['list'].map { |e| OpenWeatherMap::City.parse(e) }
     end
 

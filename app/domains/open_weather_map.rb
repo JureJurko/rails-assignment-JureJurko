@@ -5,7 +5,7 @@ module OpenWeatherMap
     id = Resolver.city_id(name)
     return nil unless id
 
-    rsp = HTTP.get("#{BASE_URL}/weather", { id: id, appid: APPID })
+    rsp = HTTP.get("#{BASE_URL}/weather?id=#{id}&appid=#{APPID}")
     City.parse(rsp.parse)
   end
 
@@ -13,7 +13,7 @@ module OpenWeatherMap
     ids = names.map { |name| Resolver.city_id(name) }.compact
     return nil if ids.blank?
 
-    rsp = HTTP.get("#{BASE_URL}/group", { id: ids.join(','), appid: APPID })
+    rsp = HTTP.get("#{BASE_URL}/group?id=#{ids.join(',')}&appid=#{APPID}")
     rsp.parse['list'].map { |hsh| City.parse(hsh) }
   end
 end
