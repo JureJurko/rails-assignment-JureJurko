@@ -14,7 +14,8 @@
 #
 # Indexes
 #
-#  index_flights_on_company_id  (company_id)
+#  index_flights_on_company_id           (company_id)
+#  index_flights_on_name_and_company_id  (name,company_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -24,7 +25,7 @@ class Flight < ApplicationRecord
   belongs_to :company
   has_many :bookings, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: { scope: :company, case_sensitive: false }
+  validates :name, presence: true, uniqueness: { scope: :company_id, case_sensitive: false }
   validates :departs_at, presence: true
   validates :arrives_at, presence: true
   validates :base_price, presence: true, numericality: { greater_than: 0 }
@@ -34,6 +35,6 @@ class Flight < ApplicationRecord
   def arrives_at_after_departs_at
     return if arrives_at.blank? || departs_at.blank?
 
-    errors.add(:arrives_at, 'must be after departs_at') if arrives_at < departs_at
+    errors.add(:departs_at, 'must be before arrives_at') if arrives_at < departs_at
   end
 end

@@ -45,7 +45,7 @@ RSpec.describe Flight do
     flight.departs_at = DateTime.new(2001, 2, 2, 2, 2, 2)
     flight.arrives_at = DateTime.new(2000, 2, 2, 2, 2, 2)
     flight.valid?
-    expect(flight.errors[:arrives_at]).to include('must be after departs_at')
+    expect(flight.errors[:departs_at]).to include('must be before arrives_at')
   end
 
   it 'is invalid if no_of_seats or base_price are 0 or less' do

@@ -31,6 +31,6 @@ class Booking < ApplicationRecord
   def departs_at_not_in_past
     return if flight.nil? || flight.departs_at.blank?
 
-    errors.add(:departs_at, 'departs_at after current date') if flight.departs_at < DateTime.current
+    errors.add(:flight, 'departs_at after current date') if flight.departs_at.past?
   end
 end

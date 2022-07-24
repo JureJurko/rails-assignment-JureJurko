@@ -36,6 +36,6 @@ RSpec.describe Booking do
 
   it 'is invalid when departs_at is in past' do
     booking.valid?
-    expect(booking.errors[:departs_at]).to include('departs_at after current date')
+    expect(booking.errors[:flight]).to include('departs_at after current date')
   end
 end
