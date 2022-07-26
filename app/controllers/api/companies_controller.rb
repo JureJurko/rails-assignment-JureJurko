@@ -17,7 +17,7 @@ module Api
         render json: CompanySerializer.render(company, root: 'company'), status: :created
       else
         company.valid?
-        render json: company.errors, status: :bad_request
+        render json: { errors: company.errors }, status: :bad_request
       end
     end
 
@@ -27,7 +27,7 @@ module Api
         render json: CompanySerializer.render(company, root: 'company'), status: :ok
       else
         company.valid?
-        render json: company.errors, status: :bad_request
+        render json: { errors: company.errors }, status: :bad_request
       end
     end
 
