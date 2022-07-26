@@ -7,14 +7,14 @@ module Api
     def show
       flight = Flight.find(params[:id])
 
-      render json: FlightSerializer.render(flight, root: 'flights'), status: :ok
+      render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
     end
 
     def create
       flight = Flight.new(permitted_params)
 
       if flight.save
-        render json: FlightSerializer.render(flight, root: 'flights'), status: :created
+        render json: FlightSerializer.render(flight, root: 'flight'), status: :created
       else
         render json: flight.errors, status: :bad_request
       end

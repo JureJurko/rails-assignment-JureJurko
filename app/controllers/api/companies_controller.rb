@@ -7,14 +7,14 @@ module Api
     def show
       company = Company.find(params[:id])
 
-      render json: CompanySerializer.render(company, root: 'companies'), status: :ok
+      render json: CompanySerializer.render(company, root: 'company'), status: :ok
     end
 
     def create
       company = Company.new(permitted_params)
 
       if company.save
-        render json: CompanySerializer.render(company, root: 'companies'), status: :created
+        render json: CompanySerializer.render(company, root: 'company'), status: :created
       else
         render json: company.errors, status: :bad_request
       end

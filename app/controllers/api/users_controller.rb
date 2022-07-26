@@ -7,14 +7,14 @@ module Api
     def show
       user = User.find(params[:id])
 
-      render json: UserSerializer.render(user, root: 'users'), status: :ok
+      render json: UserSerializer.render(user, root: 'user'), status: :ok
     end
 
     def create
       user = User.new(permitted_params)
 
       if user.save
-        render json: UserSerializer.render(user, root: 'users'), status: :created
+        render json: UserSerializer.render(user, root: 'user'), status: :created
       else
         render json: user.errors, status: :bad_request
       end
