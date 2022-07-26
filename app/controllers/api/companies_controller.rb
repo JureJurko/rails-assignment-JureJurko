@@ -16,7 +16,7 @@ module Api
       if company.save
         render json: CompanySerializer.render(company, root: 'company'), status: :created
       else
-        render json: company.errors, status: :bad_request
+        render json: company.errors.to_h, status: :bad_request
       end
     end
 

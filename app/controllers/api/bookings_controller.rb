@@ -6,7 +6,6 @@ module Api
 
     def show
       booking = Booking.find(params[:id])
-
       render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
     end
 
@@ -16,7 +15,7 @@ module Api
       if booking.save
         render json: BookingSerializer.render(booking, root: 'booking'), status: :created
       else
-        render json: booking.errors, status: :bad_request
+        render json: booking.errors.to_h, status: :bad_request
       end
     end
 

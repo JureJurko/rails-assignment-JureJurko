@@ -16,7 +16,7 @@ module Api
       if flight.save
         render json: FlightSerializer.render(flight, root: 'flight'), status: :created
       else
-        render json: flight.errors, status: :bad_request
+        render json: flight.errors.to_h, status: :bad_request
       end
     end
 
