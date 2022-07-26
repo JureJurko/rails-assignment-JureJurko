@@ -28,6 +28,7 @@ module Api
       else
         flight.valid?
         render json: flight.errors, status: :bad_request
+      end
     end
 
     def destroy
