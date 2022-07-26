@@ -36,7 +36,10 @@ module Api
     private
 
     def permitted_params
-      params.require(:booking).permit(:no_of_seats, :seat_price)
+      params.require(:booking).permit(:no_of_seats,
+                                      :seat_price,
+                                      :user,
+                                      :flight)
     end
   end
 end

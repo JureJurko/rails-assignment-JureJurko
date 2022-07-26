@@ -40,7 +40,8 @@ module Api
                                      :arrives_at,
                                      :departs_at,
                                      :base_price,
-                                     :no_of_seats)
+                                     :no_of_seats,
+                                     :company)
     end
   end
 end
