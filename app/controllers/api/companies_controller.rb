@@ -16,7 +16,6 @@ module Api
       if company.save
         render json: CompanySerializer.render(company, root: 'company'), status: :created
       else
-        company.valid?
         render json: { errors: company.errors }, status: :bad_request
       end
     end
@@ -26,7 +25,6 @@ module Api
       if company.update(permitted_params)
         render json: CompanySerializer.render(company, root: 'company'), status: :ok
       else
-        company.valid?
         render json: { errors: company.errors }, status: :bad_request
       end
     end

@@ -7,6 +7,8 @@ gem 'annotate'
 
 gem 'blueprinter'
 
+gem 'factory_bot_rails'
+
 gem 'http'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3', '>= 6.1.3.2'

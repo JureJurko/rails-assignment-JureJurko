@@ -16,7 +16,6 @@ module Api
       if user.save
         render json: UserSerializer.render(user, root: 'user'), status: :created
       else
-        user.valid?
         render json: { errors: user.errors }, status: :bad_request
       end
     end
@@ -26,7 +25,6 @@ module Api
       if user.update(permitted_params)
         render json: UserSerializer.render(user, root: 'user'), status: :ok
       else
-        user.valid?
         render json: { errors: user.errors }, status: :bad_request
       end
     end

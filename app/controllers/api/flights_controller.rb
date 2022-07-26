@@ -16,7 +16,6 @@ module Api
       if flight.save
         render json: FlightSerializer.render(flight, root: 'flight'), status: :created
       else
-        flight.valid?
         render json: { errors: flight.errors }, status: :bad_request
       end
     end
@@ -26,7 +25,6 @@ module Api
       if flight.update(permitted_params)
         render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
       else
-        flight.valid?
         render json: { errors: flight.errors }, status: :bad_request
       end
     end
