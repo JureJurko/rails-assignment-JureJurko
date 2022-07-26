@@ -22,9 +22,12 @@ module Api
 
     def update
       booking = Booking.find(params[:id])
-      booking.update(permitted_params)
-
-      render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      if booking.update(permitted_params)
+        render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      else
+        booking.valid?
+        render json: booking.errors, status: :bad_request
+      end
     end
 
     def destroy
