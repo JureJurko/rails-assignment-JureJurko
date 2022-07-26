@@ -16,7 +16,8 @@ module Api
       if user.save
         render json: UserSerializer.render(user, root: 'user'), status: :created
       else
-        render json: user.errors.to_h, status: :bad_request
+        user.valid?
+        render json: user.errors, status: :bad_request
       end
     end
 

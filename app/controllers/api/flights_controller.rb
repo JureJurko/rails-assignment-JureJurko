@@ -16,15 +16,18 @@ module Api
       if flight.save
         render json: FlightSerializer.render(flight, root: 'flight'), status: :created
       else
-        render json: flight.errors.to_h, status: :bad_request
+        flight.valid?
+        render json: flight.errors, status: :bad_request
       end
     end
 
     def update
       flight = Flight.find(params[:id])
-      flight.update(permitted_params)
-
-      render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
+      if flight.update(permitted_params)
+        render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
+      else
+        flight.valid?
+        render json: flight.errors, status: :bad_request
     end
 
     def destroy
