@@ -24,7 +24,7 @@ module Api
       flight = Flight.find(params[:id])
       flight.update(permitted_params)
 
-      render json: FlightSerializer.render(flight, root: 'flights'), status: :ok
+      render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
     end
 
     def destroy

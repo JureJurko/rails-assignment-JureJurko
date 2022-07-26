@@ -24,7 +24,7 @@ module Api
       company = Company.find(params[:id])
       company.update(permitted_params)
 
-      render json: CompanySerializer.render(company, root: 'companies'), status: :ok
+      render json: CompanySerializer.render(company, root: 'company'), status: :ok
     end
 
     def destroy

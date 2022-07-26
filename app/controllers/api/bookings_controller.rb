@@ -24,7 +24,7 @@ module Api
       booking = Booking.find(params[:id])
       booking.update(permitted_params)
 
-      render json: BookingSerializer.render(booking, root: 'bookings'), status: :ok
+      render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
     end
 
     def destroy
