@@ -45,7 +45,7 @@ module Api
                                      :departs_at,
                                      :base_price,
                                      :no_of_seats,
-                                     :company)
+                                     :company_id)
     end
   end
 end
