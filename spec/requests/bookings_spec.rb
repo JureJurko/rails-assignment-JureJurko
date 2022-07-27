@@ -83,4 +83,11 @@ RSpec.describe 'Bookings API', type: :request do
       end
     end
   end
+
+  describe 'DELETE /bookings' do
+    it 'returns 204 No content' do
+      delete "/api/bookings/#{bookings.first.id}"
+      expect(response).to have_http_status(:no_content)
+    end
+  end
 end

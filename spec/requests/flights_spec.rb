@@ -79,4 +79,11 @@ RSpec.describe 'Flights API', type: :request do
       end
     end
   end
+
+  describe 'DELETE /flights' do
+    it 'returns 204 No content' do
+      delete "/api/flights/#{flights.first.id}"
+      expect(response).to have_http_status(:no_content)
+    end
+  end
 end
