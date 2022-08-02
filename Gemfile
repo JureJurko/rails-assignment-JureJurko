@@ -7,6 +7,8 @@ gem 'annotate'
 
 gem 'blueprinter'
 
+gem 'bcrypt'
+
 gem 'factory_bot_rails'
 
 gem 'http'
