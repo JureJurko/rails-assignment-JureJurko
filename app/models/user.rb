@@ -7,6 +7,7 @@
 #  first_name      :string           not null
 #  last_name       :string
 #  password_digest :string
+#  token           :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
@@ -16,6 +17,7 @@
 #
 class User < ApplicationRecord
   has_secure_password
+  has_secure_token
   has_many :bookings, dependent: :destroy
   validates :email,
             presence: true,
