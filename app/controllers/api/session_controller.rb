@@ -1,4 +1,3 @@
-require 'pry'
 module Api
   class SessionController < ApplicationController
     def create
@@ -10,6 +9,12 @@ module Api
       else
         bad_request
       end
+    end
+
+    def destroy
+      user = User.find_by(token: current_user(session).token)
+      user.regenerate_token
+      head :no_content
     end
 
     private
@@ -24,7 +29,6 @@ module Api
     end
 
     def current_user(session)
-      binding pry
       user.find { |usr| usr.email == session.email }
     end
   end
