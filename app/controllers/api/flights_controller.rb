@@ -11,6 +11,8 @@ module Api
     end
 
     def create
+      render json: error_message, status: :unauthorized if check_user.role != 'admin'
+
       flight = Flight.new(permitted_params)
 
       if flight.save
@@ -21,6 +23,8 @@ module Api
     end
 
     def update
+      render json: error_message, status: :unauthorized if check_user.role != 'admin'
+
       flight = Flight.find(params[:id])
       if flight.update(permitted_params)
         render json: FlightSerializer.render(flight, root: 'flight'), status: :ok
@@ -30,6 +34,8 @@ module Api
     end
 
     def destroy
+      render json: error_message, status: :unauthorized if check_user.role != 'admin'
+
       flight = Flight.find(params[:id])
       flight.destroy
       head :no_content
@@ -44,6 +50,15 @@ module Api
                                      :base_price,
                                      :no_of_seats,
                                      :company_id)
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token)
+    end
+
+    def error_message
+      { errors: { token: ['is invalid'] } }
     end
   end
 end

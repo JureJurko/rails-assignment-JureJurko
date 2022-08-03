@@ -6,4 +6,5 @@ class UserSerializer < Blueprinter::Base
   field :updated_at
   field :last_name
   field :email
+  field :role, default: 'public'
 end
