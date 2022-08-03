@@ -14,6 +14,7 @@
 # Indexes
 #
 #  index_users_on_email  (email) UNIQUE
+#  index_users_on_token  (token) UNIQUE
 #
 class User < ApplicationRecord
   has_secure_password
