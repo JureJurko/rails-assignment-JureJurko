@@ -1,17 +1,19 @@
 module Api
   class BookingsController < ApplicationController
     def index
-      if check_user
-        render json: { bookings: all_bookings }, status: :ok
+      if check_user && check_user.role == 'admin'
+        render json: BookingSerializer.render(Bookings.all, root: 'bookings'), status: :ok
+      elsif check_user.role.nil?
+        render json: all_bookings, status: :ok
       else
-        render json: error_message, status: :unauthorized
+        error_message
       end
     end
 
     def show
       booking = Booking.find(params[:id])
-      if check_user.nil? || check_user.id != booking.user_id
-        render json: error_message, status: :unauthorized
+      if check_user.nil? || check_user.id != booking.user_id || check_user.role != 'admin'
+        error_message
       else
         render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
       end
@@ -26,14 +28,14 @@ module Api
           render json: { errors: booking.errors }, status: :bad_request
         end
       else
-        render json: error_message, status: :unauthorized
+        error_message
       end
     end
 
     def update
       booking = Booking.find(params[:id])
-      if check_user.id != booking.user_id
-        render json: error_message, status: :unauthorized
+      if check_user.id != booking.user_id && check_user.role != 'admin'
+        error_message
       elsif booking.update(permitted_params)
         render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
       else
@@ -42,7 +44,7 @@ module Api
     end
 
     def destroy
-      render json: error_message, status: :unauthorized if check_user.id != booking.user_id
+      error_message if check_user.id != booking.user_id || check_user.role != 'admin'
 
       booking = Booking.find(params[:id])
       booking.destroy
@@ -70,7 +72,7 @@ module Api
     end
 
     def error_message
-      { errors: { token: ['is invalid'] } }
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
     end
   end
 end

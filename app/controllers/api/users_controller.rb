@@ -1,15 +1,18 @@
 module Api
   class UsersController < ApplicationController
-    render json: error_message, status: :unauthorized if check_user.nil?
+    error_message if check_user.nil? || check_user.role != 'admin'
     def index
       render json: UserSerializer.render(User.all, root: 'users'), status: :ok
     end
 
     def show
-      render json: error_message, status: :unauthorized if check_user.nil?
-      user = User.find(params[:id])
+      error_message if check_user.nil?
 
-      render json: UserSerializer.render(user, root: 'user'), status: :ok
+      if check_user.role == 'admin' || check_user.id == params[:id]
+        render json: UserSerializer.render(User.find(params[:id]), root: 'user'), status: :ok
+      else
+        error_message
+      end
     end
 
     def create
@@ -23,7 +26,9 @@ module Api
     end
 
     def update
-      render json: error_message, status: :unauthorized if check_user.nil?
+      error_message if check_user.nil?
+
+      valid_to_update_or_delete
       user = User.find(params[:id])
       if user.update(permitted_params)
         render json: UserSerializer.render(user, root: 'user'), status: :ok
@@ -33,7 +38,9 @@ module Api
     end
 
     def destroy
-      render json: error_message, status: :unauthorized if check_user.nil?
+      error_message if check_user.nil?
+
+      valid_to_update_or_delete
       user = User.find(params[:id])
       user.destroy
       head :no_content
@@ -51,7 +58,13 @@ module Api
     end
 
     def error_message
-      { errors: { token: ['is invalid'] } }
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
+    end
+
+    def valid_to_update_or_delete
+      return true if check_user.role == 'admin' || check_user.id == params[:id]
+
+      error_message
     end
   end
 end
