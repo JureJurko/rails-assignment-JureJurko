@@ -1,5 +1,5 @@
 RSpec.describe User do
-  let(:user) { FactoryBot.create(:user, token: 'abc') }
+  let(:user) { FactoryBot.create(:user) }
 
   it 'updates when given correct password' do
     user.password = 'abcd'

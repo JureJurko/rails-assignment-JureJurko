@@ -1,7 +1,8 @@
 module Api
   class UsersController < ApplicationController
-    error_message if check_user.nil? || check_user.role != 'admin'
     def index
+      error_message if check_user.nil? || check_user.role != 'admin'
+
       render json: UserSerializer.render(User.all, root: 'users'), status: :ok
     end
 
