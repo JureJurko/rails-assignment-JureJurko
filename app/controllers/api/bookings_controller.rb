@@ -6,7 +6,7 @@ module Api
       if find_user.role != 'admin'
         user_bookings(find_user)
       else
-        render json: BookingSerializer.render(Booking.all, root: 'booking'), status: :ok
+        render json: BookingSerializer.render(Booking.all, root: 'bookings'), status: :ok
       end
     end
 
