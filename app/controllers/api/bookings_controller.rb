@@ -4,7 +4,7 @@ module Api
       if check_user && check_user.role == 'admin'
         render json: BookingSerializer.render(Bookings.all, root: 'bookings'), status: :ok
       elsif check_user.role.nil?
-        render json: all_bookings, status: :ok
+        render json: BookingSerializer.render(all_bookings, root: 'bookings'), status: :ok
       else
         error_message
       end
@@ -61,9 +61,7 @@ module Api
     end
 
     def all_bookings
-      Bookings.map { |booking| booking.user_id == user.id }.each do |booking|
-        BookingSerializer.render(booking)
-      end
+      Bookings.filter { |booking| booking.user_id == user.id }
     end
 
     def check_user
