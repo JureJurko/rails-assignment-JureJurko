@@ -25,11 +25,7 @@ module Api
       return error_message if check_user
 
       booking = Booking.new(permitted_params)
-      if valid_request(booking)
-        save_booking(booking)
-      else
-        error_message
-      end
+      save_booking(booking)
     end
 
     def update
