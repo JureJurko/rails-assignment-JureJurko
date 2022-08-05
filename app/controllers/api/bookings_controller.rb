@@ -61,7 +61,7 @@ module Api
     end
 
     def all_bookings
-      Bookings.filter { |booking| booking.user_id == user.id }
+      Bookings.all.filter { |booking| booking.user_id == user.id }
     end
 
     def check_user
