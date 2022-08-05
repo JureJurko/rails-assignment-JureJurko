@@ -8,7 +8,7 @@ module Api
 
     def show
       error_message if check_user.nil?
-      
+
       if check_user.role == 'admin' || check_user.id == params[:id]
         render json: UserSerializer.render(User.find(params[:id]), root: 'user'), status: :ok
       else
