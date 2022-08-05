@@ -1,23 +1,16 @@
 module Api
   class UsersController < ApplicationController
     def index
-      users = User.all
+      return error_message if check_user
 
-      if request.headers['HTTP_X_API_SERIALIZER'] == 'active_model_serializers'
-        render json: users, serializer: ActiveModelSerializers::UserSerializer
-      else
-        render json: UserSerializer.render(User.all, root: 'users'), status: :ok
-      end
+      render json: UserSerializer.render(User.all, root: 'users'), status: :ok
     end
 
     def show
-      user = User.find(params[:id])
+      return error_message if check_user
 
-      if request.headers['HTTP_X_API_SERIALIZER'] == 'active_model_serializers'
-        render json: user, adapter: :json, serializer: ActiveModelSerializers::UserSerializer
-      else
-        render json: UserSerializer.render(user, root: 'user'), status: :ok
-      end
+      user = User.find(params[:id])
+      render json: UserSerializer.render(user, root: 'user'), status: :ok
     end
 
     def create
@@ -31,6 +24,8 @@ module Api
     end
 
     def update
+      return error_message if check_user
+
       user = User.find(params[:id])
       if user.update(permitted_params)
         render json: UserSerializer.render(user, root: 'user'), status: :ok
@@ -40,6 +35,8 @@ module Api
     end
 
     def destroy
+      return error_message if check_user
+
       user = User.find(params[:id])
       user.destroy
       head :no_content
@@ -49,6 +46,15 @@ module Api
 
     def permitted_params
       params.require(:user).permit(:first_name, :email, :last_name)
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token).nil?
+    end
+
+    def error_message
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
     end
   end
 end

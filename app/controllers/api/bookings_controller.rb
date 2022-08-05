@@ -1,15 +1,23 @@
 module Api
   class BookingsController < ApplicationController
     def index
-      render json: BookingSerializer.render(Booking.all, root: 'bookings'), status: :ok
+      return error_message if check_user
+
+      user_bookings(find_user)
     end
 
     def show
+      return error_message if check_user
+
       booking = Booking.find(params[:id])
+      return error_message if booking.user_id != find_user.id
+
       render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
     end
 
     def create
+      return error_message if check_user
+
       booking = Booking.new(permitted_params)
 
       if booking.save
@@ -20,7 +28,11 @@ module Api
     end
 
     def update
+      return error_message if check_user
+
       booking = Booking.find(params[:id])
+      return error_message if booking.user_id != find_user.id
+
       if booking.update(permitted_params)
         render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
       else
@@ -29,7 +41,11 @@ module Api
     end
 
     def destroy
+      return error_message if check_user
+
       booking = Booking.find(params[:id])
+      return error_message if booking.id != find_user.id
+
       booking.destroy
       head :no_content
     end
@@ -41,6 +57,25 @@ module Api
                                       :seat_price,
                                       :user_id,
                                       :flight_id)
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token).nil?
+    end
+
+    def error_message
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
+    end
+
+    def user_bookings(user)
+      render json: BookingSerializer.render(user.bookings,
+                                            root: 'bookings'), status: :ok
+    end
+
+    def find_user
+      token = request.headers['Authorization']
+      User.find_by(token: token)
     end
   end
 end

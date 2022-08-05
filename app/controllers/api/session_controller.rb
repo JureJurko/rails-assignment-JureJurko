@@ -16,7 +16,7 @@ module Api
     private
 
     def error_response
-      render json: { errors: { credentials: ['are invalid'] } }, status: :unauthorized
+      render json: { errors: { credentials: ['are invalid'] } }, status: :bad_request
     end
 
     def ok_response(session)
