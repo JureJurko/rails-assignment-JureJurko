@@ -5,5 +5,6 @@ Rails.application.routes.draw do
     resources :companies
     resources :flights
     resources :bookings
+    resources :session
   end
 end

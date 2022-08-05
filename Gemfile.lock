@@ -71,6 +71,7 @@ GEM
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
+    bcrypt (3.1.18)
     blueprinter (0.25.3)
     builder (3.2.4)
     byebug (11.1.3)
@@ -242,6 +243,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   annotate
+  bcrypt
   blueprinter
   byebug
   factory_bot_rails
