@@ -1,5 +1,5 @@
 module Api
-  class SessionController < ApplicationController
+  class SessionsController < ApplicationController
     def create
       payload = JSON.parse(request.body.read)
 
@@ -11,6 +11,13 @@ module Api
       else
         error_response
       end
+    end
+
+    def destroy
+      token = request.headers['Authorization']
+      user = User.find_by(token: token)
+      user.regenerate_token
+      head :no_content
     end
 
     private

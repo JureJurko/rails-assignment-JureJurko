@@ -25,5 +25,4 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
   validates :first_name, presence: true, length: { minimum: 2 }
-  validates :password, presence: true
 end
