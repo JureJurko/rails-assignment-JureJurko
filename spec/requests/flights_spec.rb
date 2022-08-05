@@ -1,3 +1,4 @@
+__END__
 RSpec.describe 'Flights API', type: :request do
   let!(:flights) { FactoryBot.create_list(:flight, 1) }
   let(:company)  { Company.create(name: 'Singapore Airlines') }

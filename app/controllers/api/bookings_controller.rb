@@ -3,27 +3,32 @@ module Api
     def index
       return error_message if check_user
 
-      user_bookings(find_user)
+      if find_user.role != 'admin'
+        user_bookings(find_user)
+      else
+        render json: BookingSerializer.render(Booking.all, root: 'booking'), status: :ok
+      end
     end
 
     def show
       return error_message if check_user
 
       booking = Booking.find(params[:id])
-      return error_message if booking.user_id != find_user.id
-
-      render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      if find_user.role == 'admin' || find_user.id == booking.user_id
+        render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      else
+        error_message
+      end
     end
 
     def create
       return error_message if check_user
 
       booking = Booking.new(permitted_params)
-
-      if booking.save
-        render json: BookingSerializer.render(booking, root: 'booking'), status: :created
+      if valid_request(booking)
+        save_booking(booking)
       else
-        render json: { errors: booking.errors }, status: :bad_request
+        error_message
       end
     end
 
@@ -31,12 +36,10 @@ module Api
       return error_message if check_user
 
       booking = Booking.find(params[:id])
-      return error_message if booking.user_id != find_user.id
-
-      if booking.update(permitted_params)
-        render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      if valid_request(booking)
+        update_booking(booking)
       else
-        render json: { errors: booking.errors }, status: :bad_request
+        error_message
       end
     end
 
@@ -44,10 +47,12 @@ module Api
       return error_message if check_user
 
       booking = Booking.find(params[:id])
-      return error_message if booking.id != find_user.id
-
-      booking.destroy
-      head :no_content
+      if valid_request(booking)
+        booking.destroy
+        head :no_content
+      else
+        error_message
+      end
     end
 
     private
@@ -76,6 +81,26 @@ module Api
     def find_user
       token = request.headers['Authorization']
       User.find_by(token: token)
+    end
+
+    def valid_request(booking)
+      return true if find_user.role == 'admin' || find_user.id == booking.user_id
+    end
+
+    def save_booking(booking)
+      if booking.save
+        render json: BookingSerializer.render(booking, root: 'booking'), status: :created
+      else
+        render json: { errors: booking.errors }, status: :bad_request
+      end
+    end
+
+    def update_booking(booking)
+      if booking.update(permitted_params)
+        render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
+      else
+        render json: { errors: booking.errors }, status: :bad_request
+      end
     end
   end
 end

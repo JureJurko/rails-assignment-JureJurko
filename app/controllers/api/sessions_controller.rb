@@ -28,15 +28,13 @@ module Api
 
     def ok_response(session)
       render json: { session: { token: session.user.token,
-                                user: {
-                                  id: session.user.id,
-                                  created_at: session.user.created_at,
-                                  email: session.user.email,
-                                  first_name: session.user.first_name,
-                                  last_name: session.user.last_name,
-                                  updated_at: session.user.updated_at
-                                } } },
-             status: :created
+                                user: { id: session.user.id,
+                                        created_at: session.user.created_at,
+                                        email: session.user.email,
+                                        first_name: session.user.first_name,
+                                        last_name: session.user.last_name,
+                                        role: session.user.role,
+                                        updated_at: session.user.updated_at } } }, status: :created
     end
   end
 end
