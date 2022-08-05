@@ -25,7 +25,11 @@ module Api
       return error_message if check_user
 
       booking = Booking.new(permitted_params)
-      save_booking(booking)
+      if booking.save
+        render json: BookingSerializer.render(booking, root: 'booking'), status: :created
+      else
+        render json: { errors: booking.errors }, status: :bad_request
+      end
     end
 
     def update
