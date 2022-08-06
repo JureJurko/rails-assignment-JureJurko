@@ -17,12 +17,10 @@ module Api
     end
 
     def create
-      user = User.new(permitted_params_admin)
-
-      if user.save
-        render json: UserSerializer.render(user, root: 'user'), status: :created
+      if check_user
+        save_user_admin
       else
-        render json: { errors: user.errors }, status: :bad_request
+        create_user
       end
     end
 
@@ -83,6 +81,32 @@ module Api
     def permitted_params_admin
       params.require(:user).permit(:first_name, :email, :last_name,
                                    :password, :password_digest, :token, :role)
+    end
+
+    def create_user
+      if find_user.role == 'admin'
+        save_user_admin
+      else
+        save_user
+      end
+    end
+
+    def save_user_admin
+      user = User.new(permitted_params_admin)
+      if user.save
+        render json: UserSerializer.render(user, root: 'user'), status: :created
+      else
+        render json: { errors: user.errors }, status: :bad_request
+      end
+    end
+
+    def save_user
+      user = User.new(permitted_params)
+      if user.save
+        render json: UserSerializer.render(user, root: 'user'), status: :created
+      else
+        render json: { errors: user.errors }, status: :bad_request
+      end
     end
   end
 end
