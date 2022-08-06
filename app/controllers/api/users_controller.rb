@@ -49,7 +49,7 @@ module Api
 
     def permitted_params
       params.require(:user).permit(:first_name, :email, :last_name,
-                                   :password, :password_digest, :token)
+                                   :password, :password_digest, :token, :role)
     end
 
     def check_user
