@@ -11,6 +11,10 @@ module Api
     end
 
     def create
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
+
       company = Company.new(permitted_params)
 
       if company.save
@@ -21,6 +25,10 @@ module Api
     end
 
     def update
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
+
       company = Company.find(params[:id])
       if company.update(permitted_params)
         render json: CompanySerializer.render(company, root: 'company'), status: :ok
@@ -30,6 +38,10 @@ module Api
     end
 
     def destroy
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
+
       company = Company.find(params[:id])
       company.destroy
       head :no_content
@@ -39,6 +51,24 @@ module Api
 
     def permitted_params
       params.require(:company).permit(:name)
+    end
+
+    def error_message
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
+    end
+
+    def find_user
+      token = request.headers['Authorization']
+      User.find_by(token: token)
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token).nil?
+    end
+
+    def forbidden_message
+      render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
     end
   end
 end

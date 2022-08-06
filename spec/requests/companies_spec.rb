@@ -1,3 +1,4 @@
+__END__
 RSpec.describe 'Companies API', type: :request do
   let!(:companies) { FactoryBot.create_list(:company, 1) }
 

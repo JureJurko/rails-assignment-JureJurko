@@ -1,46 +1,44 @@
 module Api
   class UsersController < ApplicationController
     def index
-      users = User.all
+      return error_message if check_user
+      return forbidden_message if find_user.role != 'admin'
 
-      if request.headers['HTTP_X_API_SERIALIZER'] == 'active_model_serializers'
-        render json: users, serializer: ActiveModelSerializers::UserSerializer
-      else
-        render json: UserSerializer.render(User.all, root: 'users'), status: :ok
-      end
+      render json: UserSerializer.render(User.all, root: 'users'), status: :ok
     end
 
     def show
-      user = User.find(params[:id])
+      return error_message if check_user
 
-      if request.headers['HTTP_X_API_SERIALIZER'] == 'active_model_serializers'
-        render json: user, adapter: :json, serializer: ActiveModelSerializers::UserSerializer
-      else
-        render json: UserSerializer.render(user, root: 'user'), status: :ok
-      end
+      user = User.find(params[:id])
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
+
+      render json: UserSerializer.render(user, root: 'user'), status: :ok
     end
 
     def create
-      user = User.new(permitted_params)
-
-      if user.save
-        render json: UserSerializer.render(user, root: 'user'), status: :created
+      if check_user
+        save_user_admin
       else
-        render json: { errors: user.errors }, status: :bad_request
+        create_user
       end
     end
 
     def update
+      return error_message if check_user
+
       user = User.find(params[:id])
-      if user.update(permitted_params)
-        render json: UserSerializer.render(user, root: 'user'), status: :ok
-      else
-        render json: { errors: user.errors }, status: :bad_request
-      end
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
+
+      update_user(user)
     end
 
     def destroy
+      return error_message if check_user
+
       user = User.find(params[:id])
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
+
       user.destroy
       head :no_content
     end
@@ -48,7 +46,67 @@ module Api
     private
 
     def permitted_params
-      params.require(:user).permit(:first_name, :email, :last_name)
+      params.require(:user).permit(:first_name, :email, :last_name,
+                                   :password, :password_digest, :token)
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token).nil?
+    end
+
+    def error_message
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
+    end
+
+    def find_user
+      token = request.headers['Authorization']
+      User.find_by(token: token)
+    end
+
+    def update_user(user)
+      if user.role != 'admin' && user.update(permitted_params)
+        render json: UserSerializer.render(user, root: 'user'), status: :ok
+      elsif user.role == 'admin' && user.update(permitted_params_admin)
+        render json: UserSerializer.render(user, root: 'user'), status: :ok
+      else
+        render json: { errors: user.errors }, status: :bad_request
+      end
+    end
+
+    def forbidden_message
+      render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
+    end
+
+    def permitted_params_admin
+      params.require(:user).permit(:first_name, :email, :last_name,
+                                   :password, :password_digest, :token, :role)
+    end
+
+    def create_user
+      if find_user.role == 'admin'
+        save_user_admin
+      else
+        save_user
+      end
+    end
+
+    def save_user_admin
+      user = User.new(permitted_params_admin)
+      if user.save
+        render json: UserSerializer.render(user, root: 'user'), status: :created
+      else
+        render json: { errors: user.errors }, status: :bad_request
+      end
+    end
+
+    def save_user
+      user = User.new(permitted_params)
+      if user.save
+        render json: UserSerializer.render(user, root: 'user'), status: :created
+      else
+        render json: { errors: user.errors }, status: :bad_request
+      end
     end
   end
 end

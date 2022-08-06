@@ -1,3 +1,4 @@
+__END__
 RSpec.describe 'Users API', type: :request do
   let!(:users) { FactoryBot.create_list(:user, 1) }
 
