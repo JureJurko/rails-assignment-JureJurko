@@ -15,6 +15,7 @@ module Api
 
     def destroy
       return error_message if check_user
+
       token = request.headers['Authorization']
       user = User.find_by(token: token)
       user.regenerate_token
