@@ -1,7 +1,8 @@
 module Api
   class UsersController < ApplicationController
     def index
-      return error_message if check_user || find_user.role != 'admin'
+      return error_message if check_user
+      return forbidden_message if find_user.role != 'admin'
 
       render json: UserSerializer.render(User.all, root: 'users'), status: :ok
     end
@@ -10,7 +11,7 @@ module Api
       return error_message if check_user
 
       user = User.find(params[:id])
-      return error_message if find_user.id != user.id && find_user.role != 'admin'
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
 
       render json: UserSerializer.render(user, root: 'user'), status: :ok
     end
@@ -29,7 +30,7 @@ module Api
       return error_message if check_user
 
       user = User.find(params[:id])
-      return error_message if find_user.id != user.id && find_user.role != 'admin'
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
 
       update_user(user)
     end
@@ -38,7 +39,7 @@ module Api
       return error_message if check_user
 
       user = User.find(params[:id])
-      return error_message if find_user.id != params[:id] && find_user.role != 'admin'
+      return forbidden_message if find_user.id != params[:id] && find_user.role != 'admin'
 
       user.destroy
       head :no_content
@@ -70,6 +71,10 @@ module Api
       else
         render json: { errors: user.errors }, status: :bad_request
       end
+    end
+
+    def forbidden_message
+      render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
     end
   end
 end

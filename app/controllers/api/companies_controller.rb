@@ -11,7 +11,9 @@ module Api
     end
 
     def create
-      return error_message if check_user || find_user.role != 'admin'
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
 
       company = Company.new(permitted_params)
 
@@ -23,7 +25,9 @@ module Api
     end
 
     def update
-      return error_message if check_user || find_user.role != 'admin'
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
 
       company = Company.find(params[:id])
       if company.update(permitted_params)
@@ -34,7 +38,9 @@ module Api
     end
 
     def destroy
-      return error_message if check_user || find_user.role != 'admin'
+      return error_message if check_user
+
+      return forbidden_message if find_user.role != 'admin'
 
       company = Company.find(params[:id])
       company.destroy
@@ -59,6 +65,10 @@ module Api
     def check_user
       token = request.headers['Authorization']
       User.find_by(token: token).nil?
+    end
+
+    def forbidden_message
+      render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
     end
   end
 end

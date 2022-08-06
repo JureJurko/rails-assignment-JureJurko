@@ -17,7 +17,7 @@ module Api
       if find_user.role == 'admin' || find_user.id == booking.user_id
         render json: BookingSerializer.render(booking, root: 'booking'), status: :ok
       else
-        error_message
+        forbidden_message
       end
     end
 
@@ -39,7 +39,7 @@ module Api
       if valid_request(booking)
         update_booking(booking)
       else
-        error_message
+        forbidden_message
       end
     end
 
@@ -51,7 +51,7 @@ module Api
         booking.destroy
         head :no_content
       else
-        error_message
+        forbidden_message
       end
     end
 
@@ -101,6 +101,10 @@ module Api
       else
         render json: { errors: booking.errors }, status: :bad_request
       end
+    end
+
+    def forbidden_message
+      render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
     end
   end
 end

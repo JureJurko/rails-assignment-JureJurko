@@ -14,6 +14,7 @@ module Api
     end
 
     def destroy
+      return error_message if check_user
       token = request.headers['Authorization']
       user = User.find_by(token: token)
       user.regenerate_token
@@ -35,6 +36,15 @@ module Api
                                         last_name: session.user.last_name,
                                         role: session.user.role,
                                         updated_at: session.user.updated_at } } }, status: :created
+    end
+
+    def error_message
+      render json: { errors: { token: ['is invalid'] } }, status: :unauthorized
+    end
+
+    def check_user
+      token = request.headers['Authorization']
+      User.find_by(token: token).nil?
     end
   end
 end
