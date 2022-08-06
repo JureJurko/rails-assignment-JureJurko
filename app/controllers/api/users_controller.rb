@@ -49,7 +49,7 @@ module Api
 
     def permitted_params
       params.require(:user).permit(:first_name, :email, :last_name,
-                                   :password, :password_digest, :token, :role)
+                                   :password, :password_digest, :token)
     end
 
     def check_user
@@ -67,7 +67,9 @@ module Api
     end
 
     def update_user(user)
-      if user.update(permitted_params)
+      if user.role != 'admin' && user.update(permitted_params)
+        render json: UserSerializer.render(user, root: 'user'), status: :ok
+      elsif user.role == 'admin' && user.update(permitted_params_admin)
         render json: UserSerializer.render(user, root: 'user'), status: :ok
       else
         render json: { errors: user.errors }, status: :bad_request
@@ -76,6 +78,11 @@ module Api
 
     def forbidden_message
       render json: { errors: { resource: ['is forbidden'] } }, status: :forbidden
+    end
+
+    def permitted_params_admin
+      params.require(:user).permit(:first_name, :email, :last_name,
+                                   :password, :password_digest, :token, :role)
     end
   end
 end
