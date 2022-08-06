@@ -48,7 +48,8 @@ module Api
     private
 
     def permitted_params
-      params.require(:user).permit(:first_name, :email, :last_name, :password, :password_digest)
+      params.require(:user).permit(:first_name, :email, :last_name,
+                                   :password, :password_digest, :token)
     end
 
     def check_user
