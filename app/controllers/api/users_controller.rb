@@ -17,7 +17,7 @@ module Api
     end
 
     def create
-      user = User.new(permitted_params)
+      user = User.new(permitted_params_admin)
 
       if user.save
         render json: UserSerializer.render(user, root: 'user'), status: :created
