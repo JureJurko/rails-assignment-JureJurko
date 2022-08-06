@@ -39,7 +39,7 @@ module Api
       return error_message if check_user
 
       user = User.find(params[:id])
-      return forbidden_message if find_user.id != params[:id] && find_user.role != 'admin'
+      return forbidden_message if find_user.id != user.id && find_user.role != 'admin'
 
       user.destroy
       head :no_content
